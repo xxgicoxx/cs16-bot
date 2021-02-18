@@ -1,0 +1,38 @@
+{
+    "name": "csbot",
+    "displayName": "CSBOT",
+    "version": "1.0.0",
+    "description": "Telegram bot for Counter-Strike 1.6 Server",
+    "author": "Giovani de Oliveira <giovanioliveira@outlook.com.br>",
+    "license": "MIT",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/xxgicoxx/csbot.git"
+    },
+    "bugs": {
+        "url": "https://github.com/xxgicoxx/csbot/issues"
+    },
+    "homepage": "https://github.com/xxgicoxx/csbot#readme",
+    "keywords": [
+        "cs",
+        "1.6",
+        "hlds",
+        "Counter-Strike"
+    ],
+    "dependencies": {
+        "csstats": "^0.1.0",
+        "dotenv": "^8.2.0",
+        "node-schedule": "^2.0.0",
+        "node-telegram-bot-api": "^0.51.0",
+        "taskkill": "^3.1.0"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb-base": "^14.0.0",
+        "eslint-plugin-import": "^2.20.1"
+    }
+}
