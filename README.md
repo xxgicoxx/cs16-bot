@@ -1,4 +1,4 @@
-# CSBOT
+# CS16
 Telegram bot for Counter-Strike 1.6 Server.
 
 ![Bot](https://i.imgur.com/Xpi62zd.png)
