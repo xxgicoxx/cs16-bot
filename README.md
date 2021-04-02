@@ -33,7 +33,7 @@ Get your token from @BotFather and set in '.env' file
 ### Configure
 ````
 # Bot
-Configure bot in '.env' file
+Create and configure .env like .env.example
 
 # HLDS
 Set the '-console -game cstrike' parameters in the hlds.exe path to open as a console
@@ -52,4 +52,4 @@ npm start
 * [Node.js](https://nodejs.org/en/)
 
 ### Authors
-* **Giovani de Oliveira** - [xxgicoxx](https://github.com/xxgicoxx)
+* [xxgicoxx](https://github.com/xxgicoxx/) - Giovani de Oliveira
