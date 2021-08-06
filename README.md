@@ -1,27 +1,39 @@
-# CS16
+# CS16 Bot
 Telegram bot for Counter-Strike 1.6 Server.
 
 ![Bot](https://i.imgur.com/Xpi62zd.png)
 
-### Features
+# Features
+* /user register - Register user
+* /user delete - Delete user
+* /user admin user true/false - Change user permission
+* /server top - Top 10 players
+* /server maps - List maps
+* /server info - Server info
 * /server start - Start server
 * /server stop - Stop server
-* /top - Top 10 players
-* /motd - Today info
-* /maps - List maps
+* /server address address - Change server address
+* /server port port - Change server port
 * /poll maps - Maps poll
-* /cron start [expression] - Cron Job for auto start
-* /cron stop [expression] - Cron Job for auto stop
-* /cron poll [expression] - Cron Job for auto poll
-* /help - Commands
+* /cron start expression - Cron Job for auto start
+* /cron stop expression - Cron Job for auto stop
+* /cron poll expression - Cron Job for auto poll
+* /help - Help
 
-### Prerequisites
+# Prerequisites
 * [Node.js](https://nodejs.org/en/) - Node.js
 
-### Running
-The server can be run locally and also deployed to your own server.
+# Running
+### 1. Configure
+````
+# Bot
+Create and configure .env file like .env.example
 
-### Telegram
+# HLDS
+Set the '-console -game cstrike' parameters in the hlds.exe path to open as a console
+````
+
+### 2. Telegram
 ````
 # Create an Telegram bot
 Find @BotFather on Telegram, type /newbot and follow the instructions
@@ -30,26 +42,26 @@ Find @BotFather on Telegram, type /newbot and follow the instructions
 Get your token from @BotFather and set in '.env' file
 ````
 
-### Configure
-````
-# Bot
-Create and configure .env like .env.example
-
-# HLDS
-Set the '-console -game cstrike' parameters in the hlds.exe path to open as a console
-````
-
-### Run
+### 3. Run
 ````
 # Install dependencies
 npm install
+
+# Migrate
+npm run migrate
+
+# Seed
+npm run seed
 
 # Start
 npm start
 ````
 
-### Built With
+# Built With
 * [Node.js](https://nodejs.org/en/)
 
-### Authors
-* [xxgicoxx](https://github.com/xxgicoxx/) - Giovani de Oliveira
+# Authors
+* [xxgicoxx](https://github.com/xxgicoxx/)
+
+# Acknowledgments
+* [FlatIcon](https://www.flaticon.com/)
