@@ -38,8 +38,11 @@ Set the '-console -game cstrike' parameters in the hlds.exe path to open as a co
 # Create an Telegram bot
 Find @BotFather on Telegram, type /newbot and follow the instructions
 
-# Configure
-Get your token from @BotFather and set in '.env' file
+# Username
+Get your bot username and set 'TELEGRAM_USERNAME' in .env
+
+# Token
+Get your token from @BotFather and set 'TELEGRAM_TOKEN' in .env
 ````
 
 ### 3. Run
