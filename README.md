@@ -21,28 +21,28 @@ Telegram bot for Counter-Strike 1.6 Server.
 * /help - Help
 
 # Prerequisites
-* [Node.js](https://nodejs.org/en/) - Node.js
+* [Node.js](https://nodejs.org/en/)
 
 # Running
 ### 1. Configure
 ````
 # Bot
-Create and configure .env file like .env.example
+Create and configure .env file like .env.example.
 
 # HLDS
-Set the '-console -game cstrike' parameters in the hlds.exe path to open as a console
+Set the '-console -game cstrike' parameters in the hlds.exe path to open as a console.
 ````
 
 ### 2. Telegram
 ````
 # Create an Telegram bot
-Find @BotFather on Telegram, type /newbot and follow the instructions
+Find @BotFather on Telegram, type /newbot and follow the instructions.
 
 # Username
-Get your bot username and set 'TELEGRAM_USERNAME' in .env
+Get your bot username and set 'TELEGRAM_USERNAME' in .env.
 
 # Token
-Get your token from @BotFather and set 'TELEGRAM_TOKEN' in .env
+Get your token from @BotFather and set 'TELEGRAM_TOKEN' in .env.
 ````
 
 ### 3. Run
