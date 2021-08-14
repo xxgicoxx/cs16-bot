@@ -13,7 +13,7 @@ const bot = new TelegramBot(telegramConfig.token, { polling: true });
 const botController = new BotController(bot);
 
 i18n.configure({
-  locales: ['en', 'pt', 'uk'],
+  locales: ['en', 'pt', 'uk', 'jp'],
   defaultLocale: serverConfig.locale,
   directory: path.join(__dirname, '/locales'),
 });
