@@ -34,7 +34,7 @@
         "i18n": "^0.13.3",
         "knex": "^0.21.20",
         "node-schedule": "^2.0.0",
-        "node-telegram-bot-api": "^0.54.0",
+        "node-telegram-bot-api": "^0.56.0",
         "sqlite3": "^5.0.2",
         "taskkill": "^4.0.0"
     },
