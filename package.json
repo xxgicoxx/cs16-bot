@@ -30,7 +30,7 @@
     "dependencies": {
         "bookshelf": "^1.2.0",
         "csstats": "^0.1.0",
-        "dotenv": "^10.0.0",
+        "dotenv": "^14.3.2",
         "i18n": "^0.13.3",
         "knex": "^0.21.20",
         "node-schedule": "^2.0.0",
