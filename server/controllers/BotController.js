@@ -5,6 +5,8 @@ const {
   ServerService,
   UserService,
 } = require('../services');
+const logger = require('../../logger');
+const constants = require('../utils/constants');
 
 const helpService = new HelpService();
 const cronTabService = new CronTabService();
@@ -18,11 +20,11 @@ class BotController {
 
   async handle() {
     try {
-      this.bot.on('message', ($) => {
+      this.bot.on(constants.ON_MESSAGE, ($) => {
         const command = $.text ? $.text.replace(telegramConfig.username, '') : $.text;
 
         switch (command) {
-          case '/help':
+          case constants.COMMNAD_HELP:
             helpService.help(this.bot, $.chat);
             break;
           default:
@@ -30,15 +32,15 @@ class BotController {
         }
       });
 
-      this.bot.onText(/\/user (.+)/, ($, match) => {
+      this.bot.onText(constants.COMMAND_USER, ($, match) => {
         const params = match[1].split(' ');
         const command = params[0];
 
-        if (command === 'register') {
+        if (command === constants.COMMAND_USER_REGISTER) {
           userService.register(this.bot, $.chat, $.from);
-        } else if (command === 'delete') {
+        } else if (command === constants.COMMAND_USER_DELETE) {
           userService.del(this.bot, $.chat, $.from);
-        } else if (command === 'admin') {
+        } else if (command === constants.COMMAND_USER_ADMIN) {
           const username = params[1];
           const admin = params[2];
 
@@ -46,37 +48,37 @@ class BotController {
         }
       });
 
-      this.bot.onText(/\/server (.+)/, ($, match) => {
+      this.bot.onText(constants.COMMAND_SERVER, ($, match) => {
         const command = match[1];
 
-        if (command === 'start') {
+        if (command === constants.COMMAND_SERVER_START) {
           serverService.start(this.bot, $.chat, $.from);
-        } else if (command === 'stop') {
+        } else if (command === constants.COMMAND_SERVER_STOP) {
           serverService.stop(this.bot, $.chat, $.from);
-        } else if (command === 'top') {
+        } else if (command === constants.COMMAND_SERVER_TOP) {
           serverService.top(this.bot, $.chat);
-        } else if (command === 'maps') {
+        } else if (command === constants.COMMAND_SERVER_MAPS) {
           serverService.maps(this.bot, $.chat);
-        } else if (command === 'info') {
+        } else if (command === constants.COMMAND_SERVER_INFO) {
           serverService.info(this.bot, $.chat);
-        } else if (command.includes('address')) {
-          const address = command.replace('address', '').trim();
+        } else if (command.includes(constants.COMMAND_SERVER_ADDRESS)) {
+          const address = command.replace(constants.COMMAND_SERVER_ADDRESS, '').trim();
           serverService.address(this.bot, $.chat, $.from, address);
-        } else if (command.includes('port')) {
-          const port = command.replace('port', '').trim();
+        } else if (command.includes(constants.COMMAND_SERVER_PORT)) {
+          const port = command.replace(constants.COMMAND_SERVER_PORT, '').trim();
           serverService.port(this.bot, $.chat, $.from, port);
         }
       });
 
-      this.bot.onText(/\/poll (.+)/, ($, match) => {
+      this.bot.onText(constants.COMMAND_POLL, ($, match) => {
         const command = match[1];
 
-        if (command === 'maps') {
+        if (command === constants.COMMAND_POLL_MAPS) {
           serverService.pollMaps(this.bot, $.chat, $.from);
         }
       });
 
-      this.bot.onText(/\/cron (.+)/, ($, match) => {
+      this.bot.onText(constants.COMMAND_CRON, ($, match) => {
         const command = match[1];
         const params = command.trim().split(' ');
         const type = params[0];
@@ -85,13 +87,10 @@ class BotController {
         cronTabService.job(this.bot, $.chat, $.from, type, expression);
       });
 
-      this.bot.on('poll', (poll) => {
-        serverService.updateMaps(poll.options);
-      });
-
-      this.bot.on('polling_error', console.error);
+      this.bot.on(constants.ON_POLL, (poll) => serverService.updateMaps(poll.options));
+      this.bot.on(constants.ON_POLLING_ERROR, console.error);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
@@ -99,7 +98,7 @@ class BotController {
     try {
       cronTabService.jobs(this.bot);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 }

@@ -6,99 +6,105 @@ const csstats = require('csstats');
 const i18n = require('i18n');
 
 const { serverConfig } = require('../configs');
-const { Command, Server, User } = require('../models');
+const { Server, User } = require('../models');
+const logger = require('../../logger');
+const constants = require('../utils/constants');
 
 class ServerService {
   async start(bot, chat, from) {
     try {
-      if (from.bot || await User.isAdmin(from.id)) {
-        this.isRunning('hlds.exe', async (status) => {
-          if (!status) {
-            exec(serverConfig.hldsExe);
-          }
-
-          await bot.sendMessage(chat.id, i18n.__('Server started'));
-        });
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Permission denied'));
+      if (!(from.bot || await User.isAdmin(from.id))) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        return;
       }
+
+      const running = await this.isRunning(constants.EXECUTABLE);
+
+      if (!running) {
+        exec(serverConfig.hldsExe);
+      }
+
+      await bot.sendMessage(chat.id, i18n.__(constants.SERVER_STARTED));
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
   async stop(bot, chat, from) {
     try {
-      if (from.bot || await User.isAdmin(from.id)) {
-        await taskkill(['hlds.exe']);
-
-        await bot.sendMessage(chat.id, i18n.__('Server stopped'));
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Permission denied'));
+      if (!(from.bot || await User.isAdmin(from.id))) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        return;
       }
+
+      await taskkill([constants.EXECUTABLE]);
+      await bot.sendMessage(chat.id, i18n.__(constants.SERVER_STOPPED));
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
   async address(bot, chat, from, address) {
     try {
-      if (await User.isAdmin(from.id)) {
-        const server = await Server.findLast();
-        await Server.save({ id: server != null ? server.id : null, chat: chat.id, address });
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Permission denied'));
+      if (!await User.isAdmin(from.id)) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        return;
       }
+
+      const server = await Server.findLast();
+      await Server.save({ id: server != null ? server.id : null, chat: chat.id, address });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
   async port(bot, chat, from, port) {
     try {
-      if (await User.isAdmin(from.id)) {
-        const server = await Server.findLast();
-        await Server.save({ id: server != null ? server.id : null, chat: chat.id, port });
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Permission denied'));
+      if (!await User.isAdmin(from.id)) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        return;
       }
+
+      const server = await Server.findLast();
+      await Server.save({ id: server != null ? server.id : null, chat: chat.id, port });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
   async pollMaps(bot, chat, from) {
     try {
-      if (from.bot || await User.isAdmin(from.id)) {
-        const mapsExists = fs.existsSync(serverConfig.mapsPath);
-
-        if (mapsExists) {
-          let files = fs.readdirSync(serverConfig.mapsPath);
-          let maps = [];
-
-          files = files.filter((file) => path.extname(file).toLowerCase() === '.bsp' && (serverConfig.mapsFilter != null ? file.includes(serverConfig.mapsFilter) : true));
-
-          files.forEach((file) => {
-            maps.push(file.replace('.bsp', ''));
-          });
-
-          maps = maps.map((a) => ({
-            sort: Math.random(), value: a,
-          })).sort((a, b) => a.sort - b.sort).map((a) => a.value);
-
-          await bot.sendPoll(chat.id, i18n.__('Maps poll'), maps.slice(0, 10), {
-            allows_multiple_answers: true,
-            is_anonymous: false,
-            open_period: 3600,
-          });
-        } else {
-          await bot.sendMessage(chat.id, i18n.__('Path not found'));
-        }
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Permission denied'));
+      if (!(from.bot || await User.isAdmin(from.id))) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        return;
       }
+
+      const mapsExists = fs.existsSync(serverConfig.mapsPath);
+
+      if (!mapsExists) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PATH_NOT_FOUND));
+        return;
+      }
+
+      const files = this.readDirWithFilter(serverConfig.mapsPath);
+      let maps = [];
+
+      files.forEach((file) => {
+        maps.push(file.replace(constants.MAPS_EXTENSION, ''));
+      });
+
+      maps = maps.map((a) => ({
+        sort: Math.random(),
+        value: a,
+      })).sort((a, b) => a.sort - b.sort).map((a) => a.value);
+
+      await bot.sendPoll(chat.id, i18n.__(constants.MAPS_POLL), maps.slice(0, 10), {
+        allows_multiple_answers: true,
+        is_anonymous: false,
+        open_period: 3600,
+      });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
@@ -106,30 +112,31 @@ class ServerService {
     try {
       const serverStatsExists = fs.existsSync(serverConfig.stats);
 
-      if (serverStatsExists) {
-        csstats.parse(serverConfig.stats, async (stats) => {
-          let message = `<b>${i18n.__('Top 10')}:</b>\n`;
-
-          const players = stats.sort((a, b) => ((a.kills < b.kills) ? 1 : -1));
-          const length = players.length >= 10 ? 9 : players.length;
-
-          players.slice(0, length).forEach((player) => {
-            message += `${player.name} - ${player.kills}/${player.deaths}\n`;
-          });
-
-          await bot.sendMessage(chat.id, message, { parse_mode: 'html' });
-        });
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Path not found'));
+      if (!serverStatsExists) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PATH_NOT_FOUND));
+        return;
       }
+
+      csstats.parse(serverConfig.stats, async (stats) => {
+        let message = `<b>${i18n.__(constants.TOP_10)}:</b>\n`;
+
+        const players = stats.sort((a, b) => ((a.kills < b.kills) ? 1 : -1));
+        const length = players.length >= 10 ? 9 : players.length;
+
+        players.slice(0, length).forEach((player) => {
+          message += `${player.name} - ${player.kills}/${player.deaths}\n`;
+        });
+
+        await bot.sendMessage(chat.id, message, { parse_mode: constants.PARSE_MODE });
+      });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
   async info(bot, chat) {
     try {
-      let message = `<b>${i18n.__('First Map')}:</b>\n`;
+      let message = `<b>${i18n.__(constants.FIRST_MAP)}:</b>\n`;
 
       const serverCfgExists = fs.existsSync(serverConfig.cfg);
       const mapCycleExists = fs.existsSync(serverConfig.mapCycle);
@@ -148,10 +155,10 @@ class ServerService {
 
         message += `${serverCfgJson.map}\n\n`;
       } else {
-        message += `${i18n.__('Path not found')}\n\n`;
+        message += `${i18n.__(constants.PATH_NOT_FOUND)}\n\n`;
       }
 
-      message += `<b>${i18n.__('Map Cycle')}:</b>\n`;
+      message += `<b>${i18n.__(constants.MAP_CYCLE)}:</b>\n`;
       if (mapCycleExists) {
         const mapCycle = fs.readFileSync(serverConfig.mapCycle).toString().split('\n');
 
@@ -159,20 +166,20 @@ class ServerService {
           message += `${map}\n`;
         });
       } else {
-        message += `${i18n.__('Path not found')}\n\n`;
+        message += `${i18n.__(constants.PATH_NOT_FOUND)}\n\n`;
       }
 
-      message += `<b>${i18n.__('Server')}:</b>\n`;
+      message += `<b>${i18n.__(constants.ADDRESS)}:</b>\n`;
       if (server != null && (server.get('address') != null || server.get('port') != null)) {
-        message += `${i18n.__('Address')}: ${server.get('address') != null ? server.get('address') : 'N/A'}\n`;
-        message += `${i18n.__('Port')}: ${server.get('port') != null ? server.get('port') : 'N/A'}\n`;
+        message += `${i18n.__(constants.ADDRESS)}: ${server.get('address') != null ? server.get('address') : 'N/A'}\n`;
+        message += `${i18n.__(constants.PORT)}: ${server.get('port') != null ? server.get('port') : 'N/A'}\n`;
       } else {
-        message += i18n.__('Not configured');
+        message += i18n.__(constants.NOT_CONFIGURED);
       }
 
-      await bot.sendMessage(chat.id, message, { parse_mode: 'html' });
+      await bot.sendMessage(chat.id, message, { parse_mode: constants.PARSE_MODE });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
@@ -180,22 +187,21 @@ class ServerService {
     try {
       const mapsPathExists = fs.existsSync(serverConfig.mapsPath);
 
-      if (mapsPathExists) {
-        let message = `<b>${i18n.__('Maps')}:</b>\n`;
-        let files = fs.readdirSync(serverConfig.mapsPath);
-
-        files = files.filter((file) => path.extname(file).toLowerCase() === '.bsp' && (serverConfig.mapsFilter != null ? file.includes(serverConfig.mapsFilter) : true));
-
-        files.forEach((file) => {
-          message += `${file.replace('.bsp', '')}\n`;
-        });
-
-        await bot.sendMessage(chat.id, message, { parse_mode: 'html' });
-      } else {
-        await bot.sendMessage(chat.id, i18n.__('Path not found'));
+      if (!mapsPathExists) {
+        await bot.sendMessage(chat.id, i18n.__(constants.PATH_NOT_FOUND));
+        return;
       }
+
+      const files = this.readDirWithFilter(serverConfig.mapsPath);
+      let message = `<b>${i18n.__(constants.MAPS)}:</b>\n`;
+
+      files.forEach((file) => {
+        message += `${file.replace(constants.MAPS_EXTENSION, '')}\n`;
+      });
+
+      await bot.sendMessage(chat.id, message, { parse_mode: constants.PARSE_MODE });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
@@ -235,30 +241,33 @@ class ServerService {
 
       serverCfgStream.end();
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   }
 
-  isRunning(query, cb) {
-    const { platform } = process;
-    let cmd = '';
+  async isRunning(executable) {
+    return new Promise((resolve) => {
+      const cmd = 'tasklist';
 
-    switch (platform) {
-      case 'win32':
-        cmd = 'tasklist';
-        break;
-      case 'darwin':
-        cmd = `ps -ax | grep ${query}`;
-        break;
-      case 'linux':
-        cmd = 'ps -A';
-        break;
-      default:
-        break;
-    }
+      if (cmd === '' || executable === '') {
+        resolve(false);
+      }
 
-    exec(cmd, (error, stdout) => {
-      cb(stdout.toLowerCase().indexOf(query.toLowerCase()) > -1);
+      exec(cmd, (err, stdout) => {
+        resolve(stdout.toLowerCase().indexOf(executable.toLowerCase()) > -1);
+      });
+    });
+  }
+
+  readDirWithFilter(dirPath) {
+    const filter = serverConfig.mapsFilter;
+    const files = fs.readdirSync(dirPath);
+
+    return files.filter((file) => {
+      const extension = path.extname(file).toLowerCase();
+      const includesFilter = filter != null ? file.includes(filter) : true;
+
+      return extension === constants.MAPS_EXTENSION && includesFilter;
     });
   }
 }

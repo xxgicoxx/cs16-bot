@@ -1,23 +1,25 @@
 # CS16 Bot
 Telegram bot for Counter-Strike 1.6 Server.
 
-![Bot](https://i.imgur.com/Xpi62zd.png)
+<p align="center">
+  <img src="assets/imgs/cs16bot.png">
+</p>
 
 # Features
 * /user register - Register user
 * /user delete - Delete user
-* /user admin user true/false - Change user permission
+* /user admin `user` `true/false` - Change user permission
 * /server top - Top 10 players
 * /server maps - List maps
 * /server info - Server info
 * /server start - Start server
 * /server stop - Stop server
-* /server address address - Change server address
-* /server port port - Change server port
+* /server address `address` - Change server address
+* /server port `port` - Change server port
 * /poll maps - Maps poll
-* /cron start expression - Cron Job for auto start
-* /cron stop expression - Cron Job for auto stop
-* /cron poll expression - Cron Job for auto poll
+* /cron start `expression` - Cron Job for auto start
+* /cron stop `expression` - Cron Job for auto stop
+* /cron pollmaps `expression` - Cron Job for auto map poll
 * /help - Help
 
 # Prerequisites

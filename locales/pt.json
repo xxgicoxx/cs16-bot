@@ -29,6 +29,6 @@
 	"Maps poll": "Votação de mapas",
 	"Cron Job for auto start": "Cron Job para inicialização automática",
 	"Cron Job for auto stop": "Cron Job para parada automática",
-	"Cron Job for auto poll": "Cron Job para votação automática",
+	"Cron Job for auto map poll": "Cron Job para votação automática de mapas",
 	"Help": "Ajuda"
 }

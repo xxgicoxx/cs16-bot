@@ -26,6 +26,10 @@ class User extends bookshelf.Model {
     return (await this.findByUserAndAdmin(user, true)) != null;
   }
 
+  static async isCreator(user) {
+    return (await this.findByUserAndCreator(user, true)) != null;
+  }
+
   static async save(user) {
     const count = await User.count();
 

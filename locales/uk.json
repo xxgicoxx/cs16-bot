@@ -29,6 +29,6 @@
 	"Maps poll": "Голосування за карту",
 	"Cron Job for auto start": "Cron для авто запуску",
 	"Cron Job for auto stop": "Cron Job для авто зупинення",
-	"Cron Job for auto poll": "Cron Job для авто голосування",
+	"Cron Job for auto map poll": "Cron Job для автоматичного голосування на карті",
 	"Help": "Допомога"
 }
