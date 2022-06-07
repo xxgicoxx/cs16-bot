@@ -1,17 +1,19 @@
 const schedule = require('node-schedule');
 const i18n = require('i18n');
 
-const { CronTab, User } = require('../models');
+const { CronTab } = require('../models');
 const ServerService = require('./ServerService');
+const MemberService = require('./MemberService');
 const logger = require('../../logger');
 const constants = require('../utils/constants');
 
 const serverService = new ServerService();
+const memberService = new MemberService();
 
 class CronTabService {
   async job(bot, chat, from, type, expression) {
     try {
-      if (!(from.bot || await User.isAdmin(from.id))) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }
@@ -22,7 +24,7 @@ class CronTabService {
 
       await CronTab.save({
         id,
-        user: from.id,
+        member: from.id,
         chat: chat.id,
         type,
         expression,
@@ -58,7 +60,7 @@ class CronTabService {
     try {
       const jobs = await CronTab.findAll();
 
-      jobs.forEach((job) => this.job(bot, { id: job.get('chat') }, { id: job.get('user'), bot: true }, job.get('type'), job.get('expression')));
+      jobs.forEach((job) => this.job(bot, { id: job.get('chat') }, { id: job.get('member'), bot: true }, job.get('type'), job.get('expression')));
     } catch (error) {
       logger.error(error);
     }

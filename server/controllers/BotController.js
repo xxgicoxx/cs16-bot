@@ -3,14 +3,12 @@ const {
   HelpService,
   CronTabService,
   ServerService,
-  UserService,
 } = require('../services');
 const logger = require('../../logger');
 const constants = require('../utils/constants');
 
 const helpService = new HelpService();
 const cronTabService = new CronTabService();
-const userService = new UserService();
 const serverService = new ServerService();
 
 class BotController {
@@ -29,22 +27,6 @@ class BotController {
             break;
           default:
             break;
-        }
-      });
-
-      this.bot.onText(constants.COMMAND_USER, ($, match) => {
-        const params = match[1].split(' ');
-        const command = params[0];
-
-        if (command === constants.COMMAND_USER_REGISTER) {
-          userService.register(this.bot, $.chat, $.from);
-        } else if (command === constants.COMMAND_USER_DELETE) {
-          userService.del(this.bot, $.chat, $.from);
-        } else if (command === constants.COMMAND_USER_ADMIN) {
-          const username = params[1];
-          const admin = params[2];
-
-          userService.admin(this.bot, $.chat, $.from, username, admin);
         }
       });
 

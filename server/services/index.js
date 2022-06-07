@@ -1,11 +1,11 @@
 const HelpService = require('./HelpService');
 const CronTabService = require('./CronTabService');
 const ServerService = require('./ServerService');
-const UserService = require('./UserService');
+const MemberService = require('./MemberService');
 
 module.exports = {
   HelpService,
   CronTabService,
   ServerService,
-  UserService,
+  MemberService,
 };

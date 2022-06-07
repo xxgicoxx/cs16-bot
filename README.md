@@ -6,9 +6,6 @@ Telegram bot for Counter-Strike 1.6 Server.
 </p>
 
 # Features
-* /user register - Register user
-* /user delete - Delete user
-* /user admin `user` `true/false` - Change user permission
 * /server top - Top 10 players
 * /server maps - List maps
 * /server info - Server info
@@ -45,6 +42,15 @@ Get your bot username and set 'TELEGRAM_USERNAME' in .env.
 
 # Token
 Get your token from @BotFather and set 'TELEGRAM_TOKEN' in .env.
+
+# Create Group
+Create Telegram group
+
+# Add bot
+Add bot as member
+
+# Disable groups
+Disable bot groups on @BotFather
 ````
 
 ### 3. Run

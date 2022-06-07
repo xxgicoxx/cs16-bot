@@ -6,14 +6,17 @@ const csstats = require('csstats');
 const i18n = require('i18n');
 
 const { serverConfig } = require('../configs');
-const { Server, User } = require('../models');
+const { Server } = require('../models');
+const MemberService = require('./MemberService');
 const logger = require('../../logger');
 const constants = require('../utils/constants');
+
+const memberService = new MemberService();
 
 class ServerService {
   async start(bot, chat, from) {
     try {
-      if (!(from.bot || await User.isAdmin(from.id))) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }
@@ -32,7 +35,7 @@ class ServerService {
 
   async stop(bot, chat, from) {
     try {
-      if (!(from.bot || await User.isAdmin(from.id))) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }
@@ -46,7 +49,7 @@ class ServerService {
 
   async address(bot, chat, from, address) {
     try {
-      if (!await User.isAdmin(from.id)) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }
@@ -60,7 +63,7 @@ class ServerService {
 
   async port(bot, chat, from, port) {
     try {
-      if (!await User.isAdmin(from.id)) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }
@@ -74,7 +77,7 @@ class ServerService {
 
   async pollMaps(bot, chat, from) {
     try {
-      if (!(from.bot || await User.isAdmin(from.id))) {
+      if (!await memberService.isAdminOrCreator(bot, chat, from)) {
         await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
         return;
       }

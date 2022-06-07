@@ -4,7 +4,7 @@ exports.up = async (knex) => {
   if (!hasTable) {
     return knex.schema.createTable('crontab', (table) => {
       table.increments('id').primary();
-      table.string('user');
+      table.string('member');
       table.string('chat');
       table.string('type');
       table.string('expression');

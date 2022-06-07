@@ -1,7 +1,4 @@
 exports.seed = (knex) => knex('commands').del().then(() => knex('commands').insert([
-  { command: '/user register', description: 'Register user' },
-  { command: '/user delete', description: 'Delete user' },
-  { command: '/user admin <b>{user}</b> <b>{true/false}</b>', description: 'Change user permission' },
   { command: '/server top', description: 'Top 10 players' },
   { command: '/server maps', description: 'List maps' },
   { command: '/server info', description: 'Server info' },

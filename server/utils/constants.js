@@ -4,10 +4,6 @@ module.exports = Object.freeze({
   CRON_TYPE_POLLMAPS: 'pollmaps',
 
   PERMISSION_DENIED: 'Permission denied',
-  USER_UPDATED: 'User {{username}} updated',
-  USER_NOT_FOUND: 'User {{username}} not found',
-  USER_REGISTRED: 'User {{username}} registred or updated',
-  USER_DELETED: 'User {{username}} deleted',
   COMMANDS: 'Commands',
   SERVER_STARTED: 'Server started',
   SERVER_STOPPED: 'Server stopped',
@@ -22,13 +18,9 @@ module.exports = Object.freeze({
   MAPS: 'Maps',
 
   COMMNAD_HELP: '/help',
-  COMMAND_USER: /\/user (.+)/,
   COMMAND_SERVER: /\/server (.+)/,
   COMMAND_POLL: /\/poll (.+)/,
   COMMAND_CRON: /\/cron (.+)/,
-  COMMAND_USER_REGISTER: 'register',
-  COMMAND_USER_DELETE: 'delete',
-  COMMAND_USER_ADMIN: 'admin',
   COMMAND_SERVER_START: 'start',
   COMMAND_SERVER_STOP: 'stop',
   COMMAND_SERVER_TOP: 'top',
@@ -42,9 +34,9 @@ module.exports = Object.freeze({
   ON_POLL: 'poll',
   ON_POLLING_ERROR: 'polling_error',
 
-  ROLE_CREATOR: 'creator',
-  ROLE_ADMIN: 'admin',
-
+  CREATOR: 'creator',
+  ADMIN: 'administrator',
+  PRIVATE: 'private',
   EXECUTABLE: 'hlds.exe',
   MAPS_EXTENSION: '.bsp',
   PARSE_MODE: 'html',
