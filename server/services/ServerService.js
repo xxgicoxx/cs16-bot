@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const taskkill = require('taskkill');
 const { exec } = require('child_process');
-const csstats = require('csstats');
+const CSStats = require('csstats-reader');
 const i18n = require('i18n');
 
 const { serverConfig } = require('../configs');
@@ -11,6 +11,9 @@ const MemberService = require('./MemberService');
 const logger = require('../../logger');
 const constants = require('../utils/constants');
 
+const csstats = new CSStats({
+  path: 'C:/Users/giova/Desktop/Counter-Strike 1.6/cstrike/addons/amxmodx/data/csstats.dat',
+});
 const memberService = new MemberService();
 
 class ServerService {
@@ -89,19 +92,9 @@ class ServerService {
         return;
       }
 
-      const files = this.readDirWithFilter(serverConfig.mapsPath);
-      let maps = [];
+      const maps = this.readMaps();
 
-      files.forEach((file) => {
-        maps.push(file.replace(constants.MAPS_EXTENSION, ''));
-      });
-
-      maps = maps.map((a) => ({
-        sort: Math.random(),
-        value: a,
-      })).sort((a, b) => a.sort - b.sort).map((a) => a.value);
-
-      await bot.sendPoll(chat.id, i18n.__(constants.MAPS_POLL), maps.slice(0, 10), {
+      await bot.sendPoll(chat.id, i18n.__(constants.MAPS_POLL), this.random(maps), {
         allows_multiple_answers: true,
         is_anonymous: false,
         open_period: 3600,
@@ -120,18 +113,14 @@ class ServerService {
         return;
       }
 
-      csstats.parse(serverConfig.stats, async (stats) => {
-        let message = `<b>${i18n.__(constants.TOP_10)}:</b>\n`;
+      const top = await csstats.top();
+      let message = `<b>${i18n.__(constants.TOP_10)}:</b>\n`;
 
-        const players = stats.sort((a, b) => ((a.kills < b.kills) ? 1 : -1));
-        const length = players.length >= 10 ? 9 : players.length;
-
-        players.slice(0, length).forEach((player) => {
-          message += `${player.name} - ${player.kills}/${player.deaths}\n`;
-        });
-
-        await bot.sendMessage(chat.id, message, { parse_mode: constants.PARSE_MODE });
+      top.forEach((player) => {
+        message += `${player.name} - ${player.kills}/${player.deaths}\n`;
       });
+
+      await bot.sendMessage(chat.id, message, { parse_mode: constants.PARSE_MODE });
     } catch (error) {
       logger.error(error);
     }
@@ -195,10 +184,10 @@ class ServerService {
         return;
       }
 
-      const files = this.readDirWithFilter(serverConfig.mapsPath);
+      const maps = this.readMaps();
       let message = `<b>${i18n.__(constants.MAPS)}:</b>\n`;
 
-      files.forEach((file) => {
+      maps.forEach((file) => {
         message += `${file.replace(constants.MAPS_EXTENSION, '')}\n`;
       });
 
@@ -262,16 +251,30 @@ class ServerService {
     });
   }
 
-  readDirWithFilter(dirPath) {
+  readMaps() {
+    const dirPath = serverConfig.mapsPath;
     const filter = serverConfig.mapsFilter;
     const files = fs.readdirSync(dirPath);
 
-    return files.filter((file) => {
+    const maps = [];
+
+    files.filter((file) => {
       const extension = path.extname(file).toLowerCase();
       const includesFilter = filter != null ? file.includes(filter) : true;
 
       return extension === constants.MAPS_EXTENSION && includesFilter;
+    }).forEach((file) => {
+      maps.push(file.replace(constants.MAPS_EXTENSION, ''));
     });
+
+    return maps;
+  }
+
+  random(array) {
+    return array.map((a) => ({
+      sort: Math.random(),
+      value: a,
+    })).sort((a, b) => a.sort - b.sort).map((a) => a.value).slice(0, 10);
   }
 }
 
