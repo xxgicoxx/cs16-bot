@@ -12,7 +12,7 @@ const logger = require('../../logger');
 const constants = require('../utils/constants');
 
 const csstats = new CSStats({
-  path: 'C:/Users/giova/Desktop/Counter-Strike 1.6/cstrike/addons/amxmodx/data/csstats.dat',
+  path: serverConfig.stats,
 });
 const memberService = new MemberService();
 
