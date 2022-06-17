@@ -7,8 +7,6 @@ module.exports = Object.freeze({
   COMMANDS: 'Commands',
   SERVER_STARTED: 'Server started',
   SERVER_STOPPED: 'Server stopped',
-  PATH_NOT_FOUND: 'Path not found',
-  NOT_CONFIGURED: 'Not configured',
   MAPS_POLL: 'Maps poll',
   TOP_10: 'Top 10',
   FIRST_MAP: 'First Map',
@@ -36,8 +34,5 @@ module.exports = Object.freeze({
 
   CREATOR: 'creator',
   ADMIN: 'administrator',
-  PRIVATE: 'private',
-  EXECUTABLE: 'hlds.exe',
-  MAPS_EXTENSION: '.bsp',
   PARSE_MODE: 'html',
 });

@@ -1,6 +1,5 @@
 {
 	"Permission denied": "Permission denied 🚫",
-	"Path not found": "Path not found ❌",
 	"Server started": "Server started ✔",
 	"Server stopped": "Server stopped ❌",
 	"Top 10": "Top 10 ☠",
@@ -10,7 +9,6 @@
 	"Server": "Server 🖥",
 	"Address": "Address",
 	"Port": "Port",
-	"Not configured": "Not configured",
 	"Commands": "Commands 📝",
 	"Server info": "Server info",
 	"Start server": "Start server",

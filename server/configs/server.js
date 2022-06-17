@@ -1,10 +1,10 @@
 const server = {
-  hldsExe: process.env.HLDS_EXE || '',
+  hldsPath: process.env.HLDS_PATH || '',
   mapsPath: process.env.MAPS_PATH || '',
-  cfg: process.env.SERVER_CFG_FILE || '',
+  cfgPath: process.env.SERVER_CFG_PATH || '',
   mapsFilter: process.env.MAPS_FILTER || '',
-  stats: process.env.SERVER_CSSTATS_FILE || '',
-  mapCycle: process.env.MAPS_MAPCYCLE_FILE || '',
+  statsPath: process.env.SERVER_CSSTATS_PATH || '',
+  mapsCyclePath: process.env.MAPS_MAPCYCLE_PATH || '',
   locale: process.env.LOCALE || 'en',
 };
 
