@@ -34,7 +34,7 @@
         "csstats-reader": "^2.0.1",
         "dotenv": "^16.0.0",
         "i18n": "^0.14.2",
-        "knex": "^1.0.7",
+        "knex": "^2.4.2",
         "node-schedule": "^2.1.0",
         "node-telegram-bot-api": "^0.56.0"
     },
