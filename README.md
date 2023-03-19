@@ -44,13 +44,13 @@ Get your bot username and set 'TELEGRAM_USERNAME' in .env.
 Get your token from @BotFather and set 'TELEGRAM_TOKEN' in .env.
 
 # Create Group
-Create Telegram group
+Create Telegram group.
 
 # Add bot
-Add bot as member
+Add bot as member.
 
 # Disable groups
-Disable bot groups on @BotFather
+Disable bot groups on @BotFather.
 ````
 
 ### 3. Run
