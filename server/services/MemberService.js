@@ -1,4 +1,4 @@
-const constants = require('../utils/constants');
+const { constants } = require('../utils');
 
 class MemberService {
   async isAdmin(bot, chat, from) {
@@ -7,6 +7,7 @@ class MemberService {
     }
 
     const member = await bot.getChatMember(chat.id, from.id);
+
     return (member.status === constants.ADMIN);
   }
 
@@ -16,6 +17,7 @@ class MemberService {
     }
 
     const member = await bot.getChatMember(chat.id, from.id);
+
     return (member.status === constants.CREATOR);
   }
 
@@ -25,6 +27,7 @@ class MemberService {
     }
 
     const member = await bot.getChatMember(chat.id, from.id);
+
     return (member.status === constants.ADMIN || member.status === constants.CREATOR);
   }
 }

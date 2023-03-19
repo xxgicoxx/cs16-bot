@@ -1,11 +1,12 @@
+const cluster = require('cluster');
+
 const { telegramConfig } = require('../configs');
 const {
   HelpService,
   CronTabService,
   ServerService,
 } = require('../services');
-const logger = require('../../logger');
-const constants = require('../utils/constants');
+const { constants } = require('../utils');
 
 const helpService = new HelpService();
 const cronTabService = new CronTabService();
@@ -24,35 +25,53 @@ class BotController {
         switch (command) {
           case constants.COMMNAD_HELP:
             helpService.help(this.bot, $.chat);
+
             break;
           default:
             break;
         }
       });
 
-      this.bot.onText(constants.COMMAND_SERVER, ($, match) => {
+      this.bot.onText(constants.COMMAND_SERVER_REGEX, ($, match) => {
         const command = match[1];
 
-        if (command === constants.COMMAND_SERVER_START) {
-          serverService.start(this.bot, $.chat, $.from);
-        } else if (command === constants.COMMAND_SERVER_STOP) {
-          serverService.stop(this.bot, $.chat, $.from);
-        } else if (command === constants.COMMAND_SERVER_TOP) {
-          serverService.top(this.bot, $.chat);
-        } else if (command === constants.COMMAND_SERVER_MAPS) {
-          serverService.maps(this.bot, $.chat);
-        } else if (command === constants.COMMAND_SERVER_INFO) {
-          serverService.info(this.bot, $.chat);
-        } else if (command.includes(constants.COMMAND_SERVER_ADDRESS)) {
+        switch (command) {
+          case constants.COMMAND_SERVER_START:
+            serverService.start(this.bot, $.chat, $.from);
+
+            break;
+          case constants.COMMAND_SERVER_STOP:
+            serverService.stop(this.bot, $.chat, $.from);
+
+            break;
+          case constants.COMMAND_SERVER_TOP:
+            serverService.top(this.bot, $.chat);
+
+            break;
+          case constants.COMMAND_SERVER_MAPS:
+            serverService.maps(this.bot, $.chat);
+
+            break;
+          case constants.COMMAND_SERVER_INFO:
+            serverService.info(this.bot, $.chat);
+
+            break;
+          default:
+            break;
+        }
+
+        if (command.includes(constants.COMMAND_SERVER_ADDRESS)) {
           const address = command.replace(constants.COMMAND_SERVER_ADDRESS, '').trim();
+
           serverService.address(this.bot, $.chat, $.from, address);
         } else if (command.includes(constants.COMMAND_SERVER_PORT)) {
           const port = command.replace(constants.COMMAND_SERVER_PORT, '').trim();
+
           serverService.port(this.bot, $.chat, $.from, port);
         }
       });
 
-      this.bot.onText(constants.COMMAND_POLL, ($, match) => {
+      this.bot.onText(constants.COMMAND_POLL_REGEX, ($, match) => {
         const command = match[1];
 
         if (command === constants.COMMAND_POLL_MAPS) {
@@ -60,7 +79,7 @@ class BotController {
         }
       });
 
-      this.bot.onText(constants.COMMAND_CRON, ($, match) => {
+      this.bot.onText(constants.COMMAND_CRON_REGEX, ($, match) => {
         const command = match[1];
         const params = command.trim().split(' ');
         const type = params[0];
@@ -72,15 +91,19 @@ class BotController {
       this.bot.on(constants.ON_POLL, (poll) => serverService.updateMaps(poll.options));
       this.bot.on(constants.ON_POLLING_ERROR, console.error);
     } catch (error) {
-      logger.error(error);
+      console.error(error);
     }
   }
 
   async jobs() {
     try {
+      if (!cluster.isMaster) {
+        return;
+      }
+
       cronTabService.jobs(this.bot);
     } catch (error) {
-      logger.error(error);
+      console.error(error);
     }
   }
 }

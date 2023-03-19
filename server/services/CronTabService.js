@@ -4,8 +4,7 @@ const i18n = require('i18n');
 const { CronTab } = require('../models');
 const ServerService = require('./ServerService');
 const MemberService = require('./MemberService');
-const logger = require('../../logger');
-const constants = require('../utils/constants');
+const { constants } = require('../utils');
 
 const serverService = new ServerService();
 const memberService = new MemberService();
@@ -14,7 +13,8 @@ class CronTabService {
   async job(bot, chat, from, type, expression) {
     try {
       if (!await memberService.isAdminOrCreator(bot, chat, from)) {
-        await bot.sendMessage(chat.id, i18n.__(constants.PERMISSION_DENIED));
+        await bot.sendMessage(chat.id, i18n.__(constants.MESSAGE_PERMISSION_DENIED));
+
         return;
       }
 
@@ -39,12 +39,15 @@ class CronTabService {
           switch (type) {
             case constants.CRON_TYPE_START:
               serverService.start(bot, chat, from);
+
               break;
             case constants.CRON_TYPE_STOP:
               serverService.stop(bot, chat, from);
+
               break;
             case constants.CRON_TYPE_POLLMAPS:
               serverService.pollMaps(bot, chat, from);
+
               break;
             default:
               break;
@@ -52,7 +55,7 @@ class CronTabService {
         });
       }
     } catch (error) {
-      logger.error(error);
+      console.error(error);
     }
   }
 
@@ -62,7 +65,7 @@ class CronTabService {
 
       jobs.forEach((job) => this.job(bot, { id: job.get('chat') }, { id: job.get('member'), bot: true }, job.get('type'), job.get('expression')));
     } catch (error) {
-      logger.error(error);
+      console.error(error);
     }
   }
 }
