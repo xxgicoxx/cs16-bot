@@ -33,7 +33,7 @@
         "csfiles": "^0.0.1",
         "csstats-reader": "^2.0.1",
         "dotenv": "^16.0.0",
-        "i18n": "^0.14.2",
+        "i18n": "^0.15.1",
         "knex": "^1.0.7",
         "node-schedule": "^2.1.0",
         "node-telegram-bot-api": "^0.56.0"
